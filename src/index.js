@@ -1,24 +1,28 @@
 import http from 'http';
-import { stringify } from './utils/stringify.js';
+import path from 'path';
+import { logg } from './logging/index.js';
+import { app } from './app/index.js';
 
-const getTime = () => new Date().toISOString();
-const logg = (message) => console.log(`[${getTime()}] ${message}`);
+const HOST = String(process.env.HOST || '');
+const PORT = Number(process.env.PORT || 5000);
 
-logg(`Starting: ${process.argv.join(' ')}`);
+const isProd = process.env.NODE_ENV === 'production';
+const isDev = !isProd;
 
-const server = http.createServer();
-
-server.on('request', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.statusCode = 200;
-  res.end(
-    JSON.stringify({
-      data: 'Hello World!',
-    })
-  );
+logg(`Running: ${path.relative('..', process.argv[1])}`, {
+  fg: isDev ? '#44F' : '#F80',
+  bg: '#000',
 });
 
-server.listen(8000, () => {
-  const address = stringify(server.address());
-  logg(`Server started on: ${address}`);
+const server = http.createServer(app);
+
+server.on('listening', () => {
+  const { address, port } = server.address();
+  logg(`Server started: ${address}:${port}`);
 });
+
+server.on('connection', (socket) => {
+  logg(`Client connected: ${socket.remoteAddress}:${socket.remotePort}`);
+});
+
+server.listen(PORT, HOST);
