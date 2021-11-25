@@ -9,13 +9,14 @@ export const RouteMap = new Map();
 RouteMap.set('person', personController);
 
 /**
- * @param { AppRequest } req
- * @param { AppResponse } res
+ * @param { AppRequest } request
+ * @param { AppResponse } response
+ * @return {Promise<void>}
  */
-export function router(req, res) {
-  const [, route, ...path] = getUrl(req).pathname.split('/');
+export function router(request, response) {
+  const [, route, ...path] = getUrl(request).pathname.split('/');
   if (!RouteMap.has(route)) {
     throw new HttpError(404);
   }
-  RouteMap.get(route)(path, req, res);
+  return RouteMap.get(route)(path, request, response);
 }

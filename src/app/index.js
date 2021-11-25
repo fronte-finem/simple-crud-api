@@ -1,14 +1,14 @@
 import { router } from './router.js';
-import { sendError } from '../utils/send-error.js';
 import { loggError } from '../logging/index.js';
+import { sendError } from '../utils/http.js';
 
 /**
  * @param { AppRequest } req
  * @param { AppResponse } res
  */
-export function app(req, res) {
+export async function app(req, res) {
   try {
-    router(req, res);
+    await router(req, res);
   } catch (error) {
     loggError(error, req);
     sendError(res, error);
