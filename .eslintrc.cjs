@@ -16,5 +16,11 @@ module.exports = {
     'no-underscore-dangle': ['warn', { allowAfterThis: true }],
     'import/prefer-default-export': 'off',
     'import/extensions': ['error', 'ignorePackages'],
+    'no-restricted-syntax': [
+      'error',
+      'ForInStatement',
+      'LabeledStatement',
+      'WithStatement',
+    ],
   },
 };
