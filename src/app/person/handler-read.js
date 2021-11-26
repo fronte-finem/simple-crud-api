@@ -1,7 +1,7 @@
 import { sendJson } from '../../utils/http.js';
 import { personDatabase } from './database.js';
 import { validateUUID } from '../../utils/uuid.js';
-import { PersonNotFound } from './error-not-found.js';
+import { PersonNotFoundError } from './error-not-found.js';
 import { PathError } from '../../errors/path-error.js';
 
 /**
@@ -15,7 +15,7 @@ export const handlerRead = async (path, request, response) => {
     const [id] = path;
     validateUUID(id);
     const maybePerson = await personDatabase.findByID(id);
-    if (!maybePerson) throw new PersonNotFound(id);
+    if (!maybePerson) throw new PersonNotFoundError(id);
     return sendJson(response, maybePerson);
   }
   throw new PathError(request);
