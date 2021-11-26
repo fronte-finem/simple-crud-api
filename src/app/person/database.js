@@ -32,7 +32,7 @@ const clonePerson = ({ hobbies, ...rest }) => ({
  * @param { Person } person
  * @return { PersonDatabaseItem }
  */
-const makePersonDatabaseItem = (id, person) => clonePerson({ id, ...person });
+const makePersonDatabaseItem = (id, person) => clonePerson({ ...person, id });
 
 class PersonDatabase {
   /**
@@ -102,7 +102,7 @@ class PersonDatabase {
     const maybePerson = await this.findByID(id);
     if (maybePerson) {
       await randomDelay();
-      this.#store.filter(isNotPersonId(id));
+      this.#store = this.#store.filter(isNotPersonId(id));
     }
     return maybePerson;
   }
