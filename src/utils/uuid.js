@@ -1,3 +1,5 @@
+import { UuidError } from '../errors/uuid-error.js';
+
 // RFC defines 5 groups of 8-4-4-4-12 codepoints chars each
 const RFC4122Len = [8, 4, 4, 4, 12];
 
@@ -14,17 +16,19 @@ const charIsHEX = (char) => !Number.isNaN(parseInt(char, 16));
 const allCharsIsHEX = (str) => [...str].every(charIsHEX);
 
 /**
- * @param { string } uuid
- * @return { boolean }
+ * @param { string } id
+ * @return { void }
+ * @throws { UuidError }
  */
-export const isUuidValid = (uuid) => {
-  if (uuid.length !== 36) return false;
+export const validateUUID = (id) => {
+  if (id.length !== 36) throw new UuidError(id);
 
-  const groups = uuid.split('-');
-  if (groups.length !== 5) return false;
+  const groups = id.split('-');
+  if (groups.length !== 5) throw new UuidError(id);
 
   const lenMatch = groups.every((str, i) => str.length === RFC4122Len[i]);
-  if (!lenMatch) return false;
+  if (!lenMatch) throw new UuidError(id);
 
-  return groups.map(allCharsIsHEX).every((x) => x === true);
+  const isSomeCharNotHEX = groups.map(allCharsIsHEX).some((x) => x === false);
+  if (isSomeCharNotHEX) throw new UuidError(id);
 };
