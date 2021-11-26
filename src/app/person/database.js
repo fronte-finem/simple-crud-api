@@ -1,4 +1,10 @@
-import { randomUUID } from 'crypto';
+import { randomInt, randomUUID } from 'crypto';
+import { setTimeout } from 'timers/promises';
+
+/**
+ * @return {Promise<void>}
+ */
+const randomDelay = () => setTimeout(randomInt(10, 50));
 
 /**
  * @param { string } id
@@ -36,9 +42,10 @@ class PersonDatabase {
 
   /**
    * @param { Person } person
-   * @return { PersonDatabaseItem }
+   * @return { Promise<PersonDatabaseItem> }
    */
-  create(person) {
+  async create(person) {
+    await randomDelay();
     const id = randomUUID();
     const item = makePersonDatabaseItem(id, person);
     this.#store.push(item);
@@ -47,37 +54,41 @@ class PersonDatabase {
 
   /**
    * @param { string } id
-   * @return { MaybePersonDatabaseItem }
+   * @return { Promise<MaybePersonDatabaseItem> }
    */
-  findByID(id) {
+  async findByID(id) {
+    await randomDelay();
     return this.#store.find(isPersonId(id));
   }
 
   /**
    * @param { string } id
-   * @return { number }
+   * @return { Promise<number> }
    */
-  findIndexByID(id) {
+  async findIndexByID(id) {
+    await randomDelay();
     return this.#store.findIndex(isPersonId(id));
   }
 
   /**
-   * @return { PersonDatabaseItem[] }
+   * @return { Promise<PersonDatabaseItem[]> }
    */
-  read() {
+  async read() {
+    await randomDelay();
     return this.#store.map(clonePerson);
   }
 
   /**
    * @param { string } id
    * @param { Person } person
-   * @return { MaybePersonDatabaseItem }
+   * @return { Promise<MaybePersonDatabaseItem> }
    */
-  update(id, person) {
-    const index = this.findIndexByID(id);
+  async update(id, person) {
+    const index = await this.findIndexByID(id);
     if (index < 0) {
       return undefined;
     }
+    await randomDelay();
     const item = makePersonDatabaseItem(id, person);
     this.#store[index] = item;
     return clonePerson(item);
@@ -85,11 +96,12 @@ class PersonDatabase {
 
   /**
    * @param { string } id
-   * @return { MaybePersonDatabaseItem }
+   * @return { Promise<MaybePersonDatabaseItem> }
    */
-  delete(id) {
-    const maybePerson = this.findByID(id);
+  async delete(id) {
+    const maybePerson = await this.findByID(id);
     if (maybePerson) {
+      await randomDelay();
       this.#store.filter(isNotPersonId(id));
     }
     return maybePerson;
