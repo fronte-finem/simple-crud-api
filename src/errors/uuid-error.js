@@ -5,6 +5,6 @@ export class UuidError extends HttpErrorBadRequest {
    * @param { string } id
    */
   constructor(id) {
-    super(`"${id}" not a valid UUID!`);
+    super(`'${id}' not a valid UUID!`);
   }
 }

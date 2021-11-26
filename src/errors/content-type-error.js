@@ -7,7 +7,7 @@ export class ContentTypeError extends HttpErrorBadRequest {
    */
   constructor(whatWasExpected, whatIs) {
     super(
-      `Content-Type invalid: expected "${whatWasExpected}" but received "${whatIs}"!`
+      `Content-Type invalid: expected '${whatWasExpected}' but received '${whatIs}'!`
     );
   }
 }

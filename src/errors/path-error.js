@@ -5,6 +5,6 @@ export class PathError extends HttpErrorBadRequest {
    * @param { AppRequest } request
    */
   constructor(request) {
-    super(`Path not valid "${request.url}"`);
+    super(`Path not valid '${request.url}'`);
   }
 }

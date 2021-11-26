@@ -9,7 +9,7 @@ export class PersonPropertyTypeError extends HttpErrorBadRequest {
    */
   constructor(name, type, value) {
     super(
-      `Person property [${name}] invalid, expected "${type}" but received "${typeof value}"`
+      `Person property [${name}] invalid, expected '${type}' but received '${typeof value}'`
     );
   }
 }
