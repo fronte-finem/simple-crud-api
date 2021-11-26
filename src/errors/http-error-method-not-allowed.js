@@ -1,6 +1,6 @@
 import { HttpError } from './http-error.js';
 
-export class MethodNotAllowedError extends HttpError {
+export class HttpErrorMethodNotAllowed extends HttpError {
   /**
    * @param { string } method
    */

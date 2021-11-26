@@ -3,7 +3,7 @@ import { handlerRead } from './handler-read.js';
 import { handlerCreate } from './handler-create.js';
 import { handlerUpdate } from './handler-update.js';
 import { handlerDelete } from './handler-delete.js';
-import { MethodNotAllowedError } from '../../errors/method-not-allowed-error.js';
+import { HttpErrorMethodNotAllowed } from '../../errors/http-error-method-not-allowed.js';
 
 /**
  * @type { Controller }
@@ -19,6 +19,6 @@ export const personController = async (path, request, response) => {
     case Method.DELETE:
       return handlerDelete(path, request, response);
     default:
-      throw new MethodNotAllowedError(request.method);
+      throw new HttpErrorMethodNotAllowed(request.method);
   }
 };
