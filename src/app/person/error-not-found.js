@@ -1,6 +1,6 @@
 import { HttpError } from '../../errors/http-error.js';
 
-export class PersonNotFound extends HttpError {
+export class PersonNotFoundError extends HttpError {
   /**
    * @param { string } id
    */
