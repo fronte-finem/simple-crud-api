@@ -27,6 +27,15 @@ export function sendJson(response, data, statusCode = 200) {
 
 /**
  * @param { AppResponse } response
+ * @param { number } [statusCode]
+ */
+export function sendEmpty(response, statusCode = 204) {
+  response.statusCode = statusCode;
+  response.end();
+}
+
+/**
+ * @param { AppResponse } response
  * @param { * } error
  */
 export function sendError(response, error) {
