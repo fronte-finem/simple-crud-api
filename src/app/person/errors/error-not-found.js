@@ -1,4 +1,4 @@
-import { HttpError } from '../../errors/http-error.js';
+import { HttpError } from '../../../errors/http-error.js';
 
 export class PersonNotFoundError extends HttpError {
   /**

@@ -1,4 +1,4 @@
-import { HttpErrorBadRequest } from '../../errors/http-error-bad-request.js';
+import { HttpErrorBadRequest } from '../../../errors/http-error-bad-request.js';
 
 export class PersonNotObjectError extends HttpErrorBadRequest {
   /**

@@ -1,8 +1,8 @@
 import { Method } from '../../constants/http.js';
-import { handlerRead } from './handler-read.js';
-import { handlerCreate } from './handler-create.js';
-import { handlerUpdate } from './handler-update.js';
-import { handlerDelete } from './handler-delete.js';
+import { handleRead } from './handlers/read.js';
+import { handleCreate } from './handlers/create.js';
+import { handleUpdate } from './handlers/update.js';
+import { handleDelete } from './handlers/delete.js';
 import { HttpErrorMethodNotAllowed } from '../../errors/http-error-method-not-allowed.js';
 
 /**
@@ -11,13 +11,13 @@ import { HttpErrorMethodNotAllowed } from '../../errors/http-error-method-not-al
 export const personController = async (path, request, response) => {
   switch (request.method) {
     case Method.GET:
-      return handlerRead(path, request, response);
+      return handleRead(path, request, response);
     case Method.POST:
-      return handlerCreate(path, request, response);
+      return handleCreate(path, request, response);
     case Method.PUT:
-      return handlerUpdate(path, request, response);
+      return handleUpdate(path, request, response);
     case Method.DELETE:
-      return handlerDelete(path, request, response);
+      return handleDelete(path, request, response);
     default:
       throw new HttpErrorMethodNotAllowed(request.method);
   }

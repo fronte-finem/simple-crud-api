@@ -1,5 +1,5 @@
-import { PersonNotObjectError } from './error-not-object.js';
-import { PersonPropertyError } from './error-property.js';
+import { PersonNotObjectError } from './errors/error-not-object.js';
+import { PersonPropertyError } from './errors/error-property.js';
 
 /**
  * @template T
