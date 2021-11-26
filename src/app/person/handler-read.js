@@ -9,7 +9,8 @@ import { PathError } from '../../errors/path-error.js';
  */
 export const handlerRead = async (path, request, response) => {
   if (path.length === 0) {
-    return sendJson(response, personDatabase.read());
+    const persons = await personDatabase.read();
+    return sendJson(response, persons);
   }
   if (path.length !== 1) {
     throw new PathError(request);
