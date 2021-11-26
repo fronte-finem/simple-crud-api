@@ -11,12 +11,12 @@ export const handlerRead = async (path, request, response) => {
   if (path.length === 0) {
     return sendJson(response, personDatabase.read());
   }
-  if (path.length === 1) {
-    const [id] = path;
-    validateUUID(id);
-    const maybePerson = await personDatabase.findByID(id);
-    if (!maybePerson) throw new PersonNotFoundError(id);
-    return sendJson(response, maybePerson);
+  if (path.length !== 1) {
+    throw new PathError(request);
   }
-  throw new PathError(request);
+  const [id] = path;
+  validateUUID(id);
+  const maybePerson = await personDatabase.findByID(id);
+  if (!maybePerson) throw new PersonNotFoundError(id);
+  return sendJson(response, maybePerson);
 };
