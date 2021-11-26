@@ -1,6 +1,6 @@
 import { personController } from './person/controller.js';
-import { HttpError } from '../errors/http-error.js';
 import { getUrl } from '../utils/http.js';
+import { HttpErrorNotFound } from '../errors/http-error-not-found.js';
 
 /**
  * @type { Map<string, Controller> }
@@ -16,7 +16,7 @@ RouteMap.set('person', personController);
 export function router(request, response) {
   const [, route, ...path] = getUrl(request).pathname.split('/');
   if (!RouteMap.has(route)) {
-    throw new HttpError(404);
+    throw new HttpErrorNotFound(request.url);
   }
   return RouteMap.get(route)(path, request, response);
 }
