@@ -21,5 +21,5 @@ export const handlerUpdate = async (path, request, response) => {
   const maybePerson = await personDatabase.update(id, inputPerson);
   if (!maybePerson) throw new PersonNotFoundError(id);
 
-  sendJson(response, maybePerson, 200);
+  sendJson(response, maybePerson);
 };
