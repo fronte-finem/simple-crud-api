@@ -51,7 +51,8 @@ export function sendError(response, error) {
  * @throws { ContentTypeError }
  */
 export const getPayloadBuffer = async (mimeType, request) => {
-  const mimeTypeFromRequest = request.headers[Header.CONTENT_TYPE];
+  const mimeTypeFromRequest =
+    request.headers[Header.CONTENT_TYPE.toLowerCase()];
   if (mimeTypeFromRequest !== mimeType) {
     throw new ContentTypeError(mimeType, mimeTypeFromRequest);
   }
