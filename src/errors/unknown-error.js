@@ -6,6 +6,6 @@ export class UnknownError extends HttpErrorInternal {
    * @param { * } data
    */
   constructor(data) {
-    super(data.message === 'string' ? data.message : stringify(data));
+    super(typeof data.message === 'string' ? data.message : stringify(data));
   }
 }
