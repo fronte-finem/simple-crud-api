@@ -3,6 +3,7 @@ import { handlerRead } from './handler-read.js';
 import { HttpError } from '../../errors/http-error.js';
 import { handlerCreate } from './handler-create.js';
 import { handlerUpdate } from './handler-update.js';
+import { handlerDelete } from './handler-delete.js';
 
 /**
  * @type { Controller }
@@ -16,7 +17,7 @@ export const personController = async (path, request, response) => {
     case Method.PUT:
       return handlerUpdate(path, request, response);
     case Method.DELETE:
-      return handlerRead(path, request, response);
+      return handlerDelete(path, request, response);
     default:
   }
   throw new HttpError(500);
