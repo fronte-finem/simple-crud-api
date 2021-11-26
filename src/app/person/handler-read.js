@@ -16,7 +16,9 @@ export const handlerRead = async (path, request, response) => {
   }
   const [id] = path;
   validateUUID(id);
+
   const maybePerson = await personDatabase.findByID(id);
   if (!maybePerson) throw new PersonNotFoundError(id);
+
   return sendJson(response, maybePerson);
 };
