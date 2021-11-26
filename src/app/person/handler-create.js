@@ -11,7 +11,6 @@ export const handlerCreate = async (path, request, response) => {
     throw new PathError(request);
   }
 
-  /** @type { Person } */
   const inputPerson = await getJsonPayload(request);
   validatePerson(inputPerson);
 
