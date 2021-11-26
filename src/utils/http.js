@@ -1,6 +1,9 @@
 import { URL } from 'url';
-import { getHttpError } from '../errors/http-error.js';
+import { HttpError } from '../errors/http-error.js';
 import { Header, MimeType } from '../constants/http.js';
+import { JsonParseError } from '../errors/json-parse-error.js';
+import { ContentTypeError } from '../errors/content-type-error.js';
+import { UnknownError } from '../errors/unknown-error.js';
 
 /**
  * @param { AppRequest } request
@@ -15,9 +18,9 @@ export const getUrl = (request) =>
  * @param { T } data
  * @param { number } [statusCode]
  */
-export function sendJson(response, data, statusCode) {
+export function sendJson(response, data, statusCode = 200) {
   response.setHeader(Header.CONTENT_TYPE, MimeType.JSON);
-  response.statusCode = statusCode || 200;
+  response.statusCode = statusCode;
   response.write(JSON.stringify(data));
   response.end();
 }
@@ -27,17 +30,21 @@ export function sendJson(response, data, statusCode) {
  * @param { * } error
  */
 export function sendError(response, error) {
-  const { message, code } = getHttpError(error);
+  const { message, code } =
+    error instanceof HttpError ? error : new UnknownError(error);
   sendJson(response, { message, code }, code);
 }
 
 /**
  * @param { string } mimeType
- * @return { function(AppRequest): Promise<Buffer|null> }
+ * @param { AppRequest } request
+ * @return { Promise<Buffer> }
+ * @throws { ContentTypeError }
  */
-export const getPayloadGetter = (mimeType) => async (request) => {
-  if (request.headers[Header.CONTENT_TYPE] !== mimeType) {
-    return null;
+export const getPayloadBuffer = async (mimeType, request) => {
+  const mimeTypeFromRequest = request.headers[Header.CONTENT_TYPE];
+  if (mimeTypeFromRequest !== mimeType) {
+    throw new ContentTypeError(mimeType, mimeTypeFromRequest);
   }
   const chunks = [];
 
@@ -48,6 +55,17 @@ export const getPayloadGetter = (mimeType) => async (request) => {
 };
 
 /**
- * @type { function(AppRequest): Promise<Buffer|null> }
+ * @template T
+ * @param { AppRequest } request
+ * @return { Promise<T> }
+ * @throws { JsonParseError }
  */
-export const getJsonPayload = getPayloadGetter(MimeType.JSON);
+export const getJsonPayload = async (request) => {
+  const buffer = await getPayloadBuffer(MimeType.JSON, request);
+  const json = buffer.toString();
+  try {
+    return JSON.parse(json);
+  } catch (error) {
+    throw new JsonParseError((error && error.message) || json);
+  }
+};
