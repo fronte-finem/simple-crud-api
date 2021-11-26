@@ -1,6 +1,6 @@
 import { HttpErrorBadRequest } from '../../errors/http-error-bad-request.js';
 
-export class PersonPropertyValueError extends HttpErrorBadRequest {
+export class PersonPropertyError extends HttpErrorBadRequest {
   /**
    * @template T
    * @param { string } name
@@ -8,6 +8,6 @@ export class PersonPropertyValueError extends HttpErrorBadRequest {
    */
   constructor(name, message) {
     const explain = message ? `: ${message}` : '';
-    super(`Person property [${name}] value invalid${explain}`);
+    super(`Person property [${name}] invalid${explain}`);
   }
 }

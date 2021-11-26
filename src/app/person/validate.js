@@ -1,15 +1,12 @@
 import { PersonNotObjectError } from './error-not-object.js';
-import { PersonPropertyValueError } from './error-property-value.js';
-import { PersonPropertyTypeError } from './error-property-type.js';
+import { PersonPropertyError } from './error-property.js';
 
 /**
  * @template T
  * @typedef { Object } ValidatorOptions
  * @property { string } name - Property name
- * @property { string } type - Property type
  * @property { string } explain - Explain why property value invalid
- * @property { (value: T) => boolean } isTypeValid - Property type validator
- * @property { (value: T) => boolean } isValueValid - Property value validator
+ * @property { (value: T) => boolean } validate - Property validator
  */
 
 /**
@@ -18,37 +15,29 @@ import { PersonPropertyTypeError } from './error-property-type.js';
  * @return { (value: T) => void }
  */
 const getPropertyValidator =
-  ({ name, type, explain, isTypeValid, isValueValid }) =>
+  ({ name, explain, validate }) =>
   (value) => {
-    if (!isTypeValid(value)) {
-      throw new PersonPropertyTypeError(name, type, value);
-    }
-    if (!isValueValid(value)) {
-      throw new PersonPropertyValueError(name, explain);
+    if (!validate(value)) {
+      throw new PersonPropertyError(name, explain);
     }
   };
 
 export const PERSON_SCHEME = {
-  validateName: getPropertyValidator({
+  name: getPropertyValidator({
     name: 'name',
-    type: 'string',
-    explain: 'expected length > 0',
-    isTypeValid: (value) => typeof value === 'string',
-    isValueValid: (value) => value.length > 0,
+    explain: 'expected not empty string',
+    validate: (value) => typeof value === 'string' && value.length > 0,
   }),
-  validateAge: getPropertyValidator({
+  age: getPropertyValidator({
     name: 'age',
-    type: 'string',
-    explain: 'expected positive value',
-    isTypeValid: (value) => typeof value === 'number',
-    isValueValid: (value) => value >= 0,
+    explain: 'expected positive number',
+    validate: (value) => typeof value === 'number' && value >= 0,
   }),
-  validateHobbies: getPropertyValidator({
+  hobbies: getPropertyValidator({
     name: 'hobbies',
-    type: 'Array',
-    explain: 'expected all items in array to be string',
-    isTypeValid: (value) => Array.isArray(value),
-    isValueValid: (value) => value.every((item) => typeof item === 'string'),
+    explain: 'expected array of strings or empty array',
+    validate: (value) =>
+      Array.isArray(value) && value.every((item) => typeof item === 'string'),
   }),
 };
 
@@ -58,7 +47,9 @@ export const PERSON_SCHEME = {
 export const validatePerson = (maybePerson) => {
   const type = typeof maybePerson;
   if (type !== 'object') throw new PersonNotObjectError(type);
-  PERSON_SCHEME.validateName(maybePerson.name);
-  PERSON_SCHEME.validateAge(maybePerson.age);
-  PERSON_SCHEME.validateHobbies(maybePerson.hobbies);
+  if (maybePerson === null) throw new PersonNotObjectError('null');
+  if (Array.isArray(maybePerson)) throw new PersonNotObjectError('Array');
+  Object.entries(PERSON_SCHEME).forEach(([prop, validate]) =>
+    validate(maybePerson[prop])
+  );
 };
