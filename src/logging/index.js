@@ -11,6 +11,8 @@ const logger = new Console({ stdin: process.stdin, stdout: process.stdout });
 
 const getEscCode = (...codes) => `\x1b[${codes.join(';')}m`;
 
+const resetCode = getEscCode(Control.RESET);
+
 /**
  * @param { number } ground
  * @return { (color?: string) => string }
@@ -27,11 +29,17 @@ const getBgCode = getColorCodeFormatter(48);
  */
 const getColorCode = ({ fg, bg } = {}) => `${getFgCode(fg)}${getBgCode(bg)}`;
 
-const resetCode = getEscCode(Control.RESET);
-const timeColor = getColorCode({ fg: '#08F' });
+/**
+ * @param { string } message
+ * @param { ConsoleColor } [color]
+ */
+export const colorize = (message, color) => {
+  const colorCode = getColorCode(color);
+  return `${colorCode}${message}${resetCode}`;
+};
 
 const getTime = () => new Date().toISOString();
-const getPrettyTime = () => `${timeColor}[${getTime()}]${resetCode}`;
+const getPrettyTime = () => colorize(`[${getTime()}]`, { fg: '#08F' });
 
 /**
  * @param { string } message
@@ -42,8 +50,8 @@ export const logg = (message, color) => {
   if (!color) {
     return logger.log(`${time} ${message}`);
   }
-  const colorCode = getColorCode(color);
-  return logger.log(`${time} ${colorCode}${message}${resetCode}`);
+  const colorizedMessage = colorize(message, color);
+  return logger.log(`${time} ${colorizedMessage}`);
 };
 
 /**
