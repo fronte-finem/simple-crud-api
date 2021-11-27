@@ -1,7 +1,7 @@
 import http from 'http';
 import path from 'path';
 import { logg } from './logging/index.js';
-import { app } from './app/index.js';
+import { getApp } from './app/index.js';
 
 const HOST = String(process.env.HOST || '');
 const PORT = Number(process.env.PORT || 5000);
@@ -14,7 +14,7 @@ logg(`Running: ${path.relative('..', process.argv[1])}`, {
   bg: '#000',
 });
 
-const server = http.createServer(app);
+const server = http.createServer(getApp({ doLog: true }));
 
 server.on('listening', () => {
   const { address, port } = server.address();
