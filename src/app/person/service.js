@@ -1,10 +1,5 @@
-import { randomInt, randomUUID } from 'crypto';
-import { setTimeout } from 'timers/promises';
-
-/**
- * @return {Promise<void>}
- */
-const randomDelay = () => setTimeout(randomInt(10, 50));
+import { randomUUID } from 'crypto';
+import { randomDelay } from '../../utils/async.js';
 
 /**
  * @param { string } id
