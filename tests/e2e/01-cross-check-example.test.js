@@ -1,20 +1,12 @@
 import supertestRequest from 'supertest';
 import { getApp } from '../../src/app/index.js';
 import { PersonNotFoundError } from '../../src/app/person/errors/error-not-found.js';
-import { describe1, describe2 } from './helpers.js';
+import { describe1, describe2 } from '../helpers.js';
+import { PERSON_1, PERSON_2, ROUTE, UUID_LENGTH } from '../constants.js';
 
 const app = getApp({ doLog: false });
 
-const ROUTE = '/person';
-
-const UUID_LENGTH = 36;
-
-const makePerson = (name, age, hobbies) => ({ name, age, hobbies });
-
-const PERSON_1 = makePerson('Qwerty', 23, [...'🙈🙉🙊🐵']);
-const PERSON_2 = makePerson('Йцукен', 45, [...'🍷🍸🍹🍺🥃']);
-
-describe1(' SCENARIO ~1~ Cross-check example: ', () => {
+describe1('SCENARIO ~1~ Cross-check example:', () => {
   let testId = '';
 
   describe2('1. GET-запросом получаем все объекты:', () => {
