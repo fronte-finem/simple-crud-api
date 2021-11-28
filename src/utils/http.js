@@ -1,16 +1,8 @@
-import { URL } from 'url';
 import { HttpError } from '../errors/http-error.js';
 import { Header, MimeType } from '../constants/http.js';
 import { JsonParseError } from '../errors/json-parse-error.js';
 import { ContentTypeError } from '../errors/content-type-error.js';
 import { UnknownError } from '../errors/unknown-error.js';
-
-/**
- * @param { AppRequest } request
- * @return { module:url.URL }
- */
-export const getUrl = (request) =>
-  new URL(request.url, `http://${request.headers.host}`);
 
 /**
  * @template T

@@ -1,7 +1,6 @@
 import { Console } from 'console';
 import { Control } from './constants.js';
 import { stringify } from '../utils/stringify.js';
-import { getUrl } from '../utils/http.js';
 import { parseHexColor } from './parse-color.js';
 
 /**
@@ -63,5 +62,6 @@ export const loggError = (error, req) => {
     error instanceof Error
       ? `${error.message} ${stringify(error)}`
       : stringify(error);
-  logg(`Error: ${msg}${req ? ` ${getUrl(req)}` : ''}`, { fg: '#F33' });
+  const url = `http://${req.headers.host}${req.url}`;
+  logg(`Error: ${msg}${req ? ` ${url}` : ''}`, { fg: '#F33' });
 };

@@ -14,7 +14,7 @@ RouteMap.set('person', personController);
  * @return {Promise<void>}
  */
 export function router(request, response) {
-  const [, route, ...path] = getUrl(request).pathname.split('/');
+  const [, route, ...path] = request.url.split('/');
   if (!RouteMap.has(route)) {
     throw new HttpErrorNotFound(request.url);
   }
