@@ -3,7 +3,7 @@ import path from 'path';
 import { logg } from './logging/index.js';
 import { getApp } from './app/index.js';
 
-const HOST = String(process.env.HOST || '');
+const HOST = String(process.env.HOST || 'localhost');
 const PORT = Number(process.env.PORT || 5000);
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -17,8 +17,8 @@ logg(`Running: ${path.relative('..', process.argv[1])}`, {
 const server = http.createServer(getApp({ doLog: true }));
 
 server.on('listening', () => {
-  const { address, port } = server.address();
-  logg(`Server started: ${address}:${port}`);
+  const { port } = server.address();
+  logg(`Server started: http://${HOST}:${port}`);
 });
 
 server.on('connection', (socket) => {
