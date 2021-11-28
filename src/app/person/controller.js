@@ -4,6 +4,7 @@ import { handleCreate } from './handlers/create.js';
 import { handleUpdate } from './handlers/update.js';
 import { handleDelete } from './handlers/delete.js';
 import { HttpErrorMethodNotAllowed } from '../../errors/http-error-method-not-allowed.js';
+import { randomErrorController } from './handlers/random-error-controller.js';
 
 /**
  * @type { Controller }
@@ -18,6 +19,8 @@ export const personController = async (path, request, response) => {
       return handleUpdate(path, request, response);
     case Method.DELETE:
       return handleDelete(path, request, response);
+    case Method.PATCH:
+      return randomErrorController();
     default:
       throw new HttpErrorMethodNotAllowed(request.method);
   }
