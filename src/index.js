@@ -23,6 +23,9 @@ server.on('listening', () => {
 
 server.on('connection', (socket) => {
   logg(`Client connected: ${socket.remoteAddress}:${socket.remotePort}`);
+  socket.on('close', () =>
+    logg(`Client disconnected: ${socket.remoteAddress}:${socket.remotePort}`)
+  );
 });
 
 server.listen(PORT, HOST);
