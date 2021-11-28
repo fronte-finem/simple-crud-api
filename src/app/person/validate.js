@@ -47,7 +47,7 @@ export const PERSON_SCHEME = {
 export const validatePerson = (maybePerson) => {
   const type = typeof maybePerson;
   if (type !== 'object') throw new PersonNotObjectError(type);
-  // if (maybePerson === null) throw new PersonNotObjectError('null');
+  if (maybePerson === null) throw new PersonNotObjectError('null');
   if (Array.isArray(maybePerson)) throw new PersonNotObjectError('Array');
   Object.entries(PERSON_SCHEME).forEach(([prop, validate]) =>
     validate(maybePerson[prop])
