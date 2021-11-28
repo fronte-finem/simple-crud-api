@@ -2,23 +2,12 @@ import { randomUUID } from 'crypto';
 import { randomDelay } from '../../utils/async.js';
 
 /**
- * @param { string } id
- * @return { (person: PersonDatabaseItem) => boolean }
+ * @param { Person } person
+ * @return { Person }
  */
-const isPersonId = (id) => (person) => person.id === id;
-
-/**
- * @param { string } id
- * @return { (person: PersonDatabaseItem) => boolean }
- */
-const isNotPersonId = (id) => (person) => person.id !== id;
-
-/**
- * @param { PersonDatabaseItem } person
- * @return { PersonDatabaseItem }
- */
-const clonePerson = ({ hobbies, ...rest }) => ({
-  ...rest,
+const clonePerson = ({ name, age, hobbies }) => ({
+  name,
+  age,
   hobbies: [...hobbies],
 });
 
@@ -27,13 +16,13 @@ const clonePerson = ({ hobbies, ...rest }) => ({
  * @param { Person } person
  * @return { PersonDatabaseItem }
  */
-const makePersonDatabaseItem = (id, person) => clonePerson({ ...person, id });
+const makePersonDatabaseItem = (id, person) => ({ id, ...clonePerson(person) });
 
 class PersonDatabase {
   /**
-   * @type { PersonDatabaseItem[] }
+   * @type { Map<string, Person> }
    */
-  #store = [];
+  #store = new Map();
 
   /**
    * @param { Person } person
@@ -42,9 +31,8 @@ class PersonDatabase {
   async create(person) {
     await randomDelay();
     const id = randomUUID();
-    const item = makePersonDatabaseItem(id, person);
-    this.#store.push(item);
-    return clonePerson(item);
+    this.#store.set(id, clonePerson(person));
+    return makePersonDatabaseItem(id, person);
   }
 
   /**
@@ -52,17 +40,12 @@ class PersonDatabase {
    * @return { Promise<MaybePersonDatabaseItem> }
    */
   async findByID(id) {
+    if (!this.#store.has(id)) {
+      return undefined;
+    }
     await randomDelay();
-    return this.#store.find(isPersonId(id));
-  }
-
-  /**
-   * @param { string } id
-   * @return { Promise<number> }
-   */
-  async findIndexByID(id) {
-    await randomDelay();
-    return this.#store.findIndex(isPersonId(id));
+    const person = this.#store.get(id);
+    return makePersonDatabaseItem(id, person);
   }
 
   /**
@@ -70,7 +53,9 @@ class PersonDatabase {
    */
   async read() {
     await randomDelay();
-    return this.#store.map(clonePerson);
+    return [...this.#store.entries()].map((item) =>
+      makePersonDatabaseItem(...item)
+    );
   }
 
   /**
@@ -79,14 +64,12 @@ class PersonDatabase {
    * @return { Promise<MaybePersonDatabaseItem> }
    */
   async update(id, person) {
-    const index = await this.findIndexByID(id);
-    if (index < 0) {
+    if (!this.#store.has(id)) {
       return undefined;
     }
     await randomDelay();
-    const item = makePersonDatabaseItem(id, person);
-    this.#store[index] = item;
-    return clonePerson(item);
+    this.#store.set(id, clonePerson(person));
+    return makePersonDatabaseItem(id, person);
   }
 
   /**
@@ -97,7 +80,7 @@ class PersonDatabase {
     const maybePerson = await this.findByID(id);
     if (maybePerson) {
       await randomDelay();
-      this.#store = this.#store.filter(isNotPersonId(id));
+      this.#store.delete(id);
     }
     return maybePerson;
   }
